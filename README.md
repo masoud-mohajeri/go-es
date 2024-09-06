@@ -45,8 +45,8 @@ The `projection` package generates read models from events. Handlers are registe
 - **Register(eventType, handlerFunc)**: Register a handler for a specific event type.
 - **GenerateSnapshot()**: Generates snapshots by reading from the queue and applying event handlers.
 
-### 4. Storage
-The `storage` package provides a simple file-based storage mechanism for persisting event data and snapshots. It uses JSON serialization to save data to text files and supports retrieving the latest and previous values for a given key.
+### 4. Event Store
+The `eventStore` package provides a simple file-based storage mechanism for persisting event data and snapshots. It uses JSON serialization to save data to text files and supports retrieving the latest and previous values for a given key.
 
 #### Methods:
 - **Save(key string, value []byte)**: Saves a new value to the file system. If a previous value exists, it is stored in the `PreviousValues` array, and the new value is set as `LatestValue`. Data is stored in JSON format.

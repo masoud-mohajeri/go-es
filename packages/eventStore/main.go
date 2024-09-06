@@ -1,4 +1,4 @@
-package storage
+package eventStore
 
 import "sync"
 
@@ -7,7 +7,7 @@ type Storage interface {
 	Save(key string, value []byte) error
 }
 
-func NewStorage() Storage {
+func NewEventStore() Storage {
 	return &txtFileStorage{
 		mutex: sync.Mutex{},
 	}

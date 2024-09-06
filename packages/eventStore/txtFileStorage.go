@@ -1,4 +1,4 @@
-package storage
+package eventStore
 
 import (
 	"encoding/json"
@@ -13,8 +13,8 @@ import (
 //}
 
 type fileContent struct {
-	PreviousValues []string `json:"previous_values"` // TODO: make it from type history
-	LatestValue    string   `json:"latest_value"`
+	Events       []string `json:"events"` // TODO: make it from type history
+	CurrentState string   `json:"current_state"`
 }
 
 type txtFileStorage struct {
@@ -29,30 +29,30 @@ func (f *txtFileStorage) Save(key string, value []byte) error {
 
 	previousValues, err := f.Get(key)
 	if err != nil && !os.IsNotExist(err) {
-		fmt.Println("-text storage: Error getting previousValues", err)
+		fmt.Println("-eventStore: Error getting previousValues", err)
 		return err
 	}
 
 	err = json.Unmarshal(previousValues, fileContent)
 	if err != nil {
-		fmt.Println("-text storage: error unmarshalling previousValues:", err)
+		fmt.Println("-eventStore: error unmarshalling previousValues:", err)
 		return err
 	}
 
-	if fileContent.LatestValue != "" {
-		fileContent.PreviousValues = append(fileContent.PreviousValues, fileContent.LatestValue)
+	if fileContent.CurrentState != "" {
+		fileContent.Events = append(fileContent.Events, fileContent.CurrentState)
 	}
-	fileContent.LatestValue = string(value)
+	fileContent.CurrentState = string(value)
 
 	binaryContent, err := json.Marshal(fileContent)
 	if err != nil {
-		fmt.Println("-text storage: error marshalling previousValues:", err)
+		fmt.Println("-eventStore: error marshalling previousValues:", err)
 		return err
 	}
 
 	err = os.WriteFile(keyToFilename(key), binaryContent, os.ModePerm)
 	if err != nil {
-		fmt.Println("-text storage: error writing previousValues:", err)
+		fmt.Println("-eventStore: error writing previousValues:", err)
 		return err
 	}
 	return nil
@@ -64,7 +64,7 @@ func (f *txtFileStorage) Get(key string) ([]byte, error) {
 		if os.IsNotExist(err) {
 			return []byte("{}"), nil
 		}
-		fmt.Println("-text storage: error reading value with key", key, ":", err)
+		fmt.Println("-eventStore: error reading value with key", key, ":", err)
 		return nil, err
 	}
 	return fileContent, nil

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/masoud-mohajeri/go-es/packages/cron"
 	"github.com/masoud-mohajeri/go-es/packages/dispatcher"
+	"github.com/masoud-mohajeri/go-es/packages/eventStore"
 	"github.com/masoud-mohajeri/go-es/packages/projection"
 	"github.com/masoud-mohajeri/go-es/packages/queue"
-	"github.com/masoud-mohajeri/go-es/packages/storage"
 	"os"
 	"os/signal"
 	"syscall"
@@ -26,7 +26,7 @@ func main() {
 	orderOneED := dispatcher.NewDispatcher(orderOneTopic)
 
 	// database
-	db := storage.NewStorage()
+	db := eventStore.NewEventStore()
 
 	// event handlers
 	handlers := projection.Handler{
